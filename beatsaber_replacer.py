@@ -1,6 +1,7 @@
 import os
 import re
 import requests
+from subprocess import Popen
 from bs4 import BeautifulSoup
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36'}
@@ -16,9 +17,13 @@ def getLatestManifestValue():
     return manifestValue
 
 
-def getManifestPath():
+def getSteamFolder():
     systemDrive = os.getenv("SystemDrive")
-    manifestFile = os.path.join(systemDrive, os.sep, "Program Files (x86)", "Steam", "steamapps", "appmanifest_620980.acf")
+    return os.path.join(systemDrive, os.sep, "Program Files (x86)", "Steam")
+
+
+def getManifestPath():
+    manifestFile = os.path.join(getSteamFolder(), "steamapps", "appmanifest_620980.acf")
     return manifestFile
 
 
@@ -38,4 +43,6 @@ def replaceManifestParameters(manifestValue):
     return data
 
 
+Popen(["taskkill","/F","/IM","steam.exe"])
 replaceManifestParameters(getLatestManifestValue())
+Popen([os.path.join(getSteamFolder(), "steam.exe")])
